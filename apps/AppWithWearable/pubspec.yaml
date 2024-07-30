@@ -93,6 +93,9 @@ dependencies:
   flutter_background_service: ^5.0.6
   opus_flutter: ^3.0.2
   opus_dart: ^3.0.1
+  just_waveform: ^0.0.5
+  just_audio: ^0.9.38
+  rxdart: ^0.27.7
   growthbook_sdk_flutter: ^3.9.2
   flutter_rating_bar: ^4.0.1
   device_calendar: ^4.3.2
@@ -108,6 +111,7 @@ dependencies:
   internet_connection_checker_plus: ^2.5.0
   
   docx_template: ^0.4.0
+
 
 
 dependency_overrides:

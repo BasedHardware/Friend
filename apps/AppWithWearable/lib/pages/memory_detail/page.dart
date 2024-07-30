@@ -4,11 +4,13 @@ import 'package:friend_private/backend/database/memory.dart';
 import 'package:friend_private/backend/database/transcript_segment.dart';
 import 'package:friend_private/backend/mixpanel.dart';
 import 'package:friend_private/backend/preferences.dart';
+import 'package:friend_private/pages/memory_detail/custom_audio_player.dart';
 import 'package:friend_private/pages/memory_detail/share.dart';
 import 'package:friend_private/pages/memory_detail/widgets.dart';
 import 'package:friend_private/utils/memories/reprocess.dart';
 import 'package:friend_private/widgets/expandable_text.dart';
 import 'package:friend_private/widgets/photos_grid.dart';
+
 import 'package:friend_private/widgets/transcript.dart';
 import 'package:tuple/tuple.dart';
 
@@ -83,7 +85,8 @@ class _MemoryDetailPageState extends State<MemoryDetailPage> with TickerProvider
         backgroundColor: Theme.of(context).colorScheme.primary,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          elevation: 0,
+          backgroundColor: Theme.of(context).canvasColor,
           title: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,18 +133,38 @@ class _MemoryDetailPageState extends State<MemoryDetailPage> with TickerProvider
             : null,
         body: Column(
           children: [
-            TabBar(
-              indicatorSize: TabBarIndicatorSize.label,
-              isScrollable: false,
-              padding: EdgeInsets.zero,
-              indicatorPadding: EdgeInsets.zero,
-              controller: _controller,
-              labelStyle: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 18),
-              tabs: [
-                Tab(text: widget.memory.type == MemoryType.image ? 'Photos' : 'Transcript'),
-                const Tab(text: 'Summary')
-              ],
-              indicator: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(16)),
+            (widget.memory.recordingFilePath?.isEmpty ?? false)
+                ? const SizedBox.shrink()
+                : CustomAudioPlayer(
+                    audioFilePath: widget.memory.recordingFilePath!,
+                    type: widget.memory.recordingFilePath!.contains('http') ? FileType.NETWORK : FileType.LOCAL,
+                  ),
+            const SizedBox(height: 20),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).canvasColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TabBar(
+                indicatorSize: TabBarIndicatorSize.tab,
+                isScrollable: false,
+                padding: const EdgeInsets.all(4),
+                indicatorPadding: const EdgeInsets.all(4),
+                controller: _controller,
+                labelStyle: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 18),
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.grey,
+                tabs: const [
+                  Tab(text: 'Transcript'),
+                  Tab(text: 'Summary'),
+                  // Tab(text: 'Plugins'),
+                ],
+                indicator: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
             ),
             Expanded(
               child: Padding(
